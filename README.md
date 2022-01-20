@@ -57,7 +57,7 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://raw.githubusercontent.com/othneildrew/Best-README-Template/master/images/screenshot.png)
 
-DigSig solves the issue USI has with needing hand-written signatures on forms to a digital signature.
+DigSig solves the issue USI has with needing hand-written signatures on forms. This project allows a digital signature.
 
 Here's why:
 Saves money
