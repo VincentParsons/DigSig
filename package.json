@@ -36,8 +36,8 @@
     "toastify": "^2.0.1"
   },
   "scripts": {
-    "start": "SET NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
-    "build": "SET NODE_OPTIONS=--openssl-legacy-provider && react-scripts build && node script.js",
+    "start": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts build && node script.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

@@ -7,7 +7,7 @@ export const Contributors = (props) => {
         </div>
         <div className='row'>
           {props.data
-            ? props.data.map((d, i) => (
+          ? props.data.map((d, i) => (
                 <div key={`${d.name}-${i}`} className='col-md-4'>
                   <div className='contributor'>
                     <div className='contributor-image'>
