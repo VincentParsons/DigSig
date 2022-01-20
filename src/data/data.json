@@ -1,0 +1,53 @@
+{
+    "Header": {
+
+        "title": "digital-signature",
+        "paragraph": "A pdf digital signature software"
+
+    },
+    "Contributors": [{
+            "img": "img/contributors/01.jpg",
+            "text": "Developer",
+            "name": "William Duthoo"
+        },
+        {
+            "img": "img/contributors/02.jpg",
+            "text": "Developer",
+            "name": "Evan Adams"
+        },
+        {
+            "img": "img/contributors/03.jpg",
+            "text": "Developer",
+            "name": "Hugues Mbumba"
+        },
+        {
+            "img": "img/contributors/04.jpg",
+            "text": "Documentation Work",
+            "name": "Layne Cox"
+        }
+    ],
+    "Features": [{
+            "icon": "fa fa-file-pdf-o",
+            "title": "CREATE",
+            "text": "Create a pdf signature"
+        },
+        {
+            "icon": "fa fa-pencil-square-o",
+            "title": "EDIT",
+            "text": "Edit the document to suit your needs"
+        },
+        {
+            "icon": "fa fa-group",
+            "title": "SHARE",
+            "text": "Share the document to the required people"
+        },
+        {
+            "icon": "fa fa-magic",
+            "title": "HOORAY!",
+            "text": "Que happy dance!"
+        }
+    ],
+    "ParticlesBG": {
+        "type": ""
+    }
+}
