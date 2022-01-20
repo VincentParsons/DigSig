@@ -59,13 +59,11 @@
 
 DigSig solves the issue USI has with needing hand-written signatures on forms. This project allows a digital signature.
 
-This project will save time, money, and is highly convenient for both staff and students.
+This project will save time, money and is highly convenient for both staff and students.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Built With
-
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 
 * [React.js](https://reactjs.org/)
 * [Node.js](https://nodejs.org/en/)
