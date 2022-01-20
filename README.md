@@ -59,10 +59,7 @@
 
 DigSig solves the issue USI has with needing hand-written signatures on forms. This project allows a digital signature.
 
-Here's why:
-Saves money
-Saves time
-Convenient for both staff and student
+This project will save time, money, and is highly convenient for both staff and students.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
