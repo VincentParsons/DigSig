@@ -135,6 +135,7 @@ Distributed under the Apache 2.0 License. See `LICENSE.txt` for more information
 ## Contact
 
 Vincent Parsons - [LinkedIn](www.linkedin.com/in/vwparsons) - vwparsons@eagles.usi.edu <br/>
+Erica Bratton - [LinkedIn] (www.linkedin.com/in/ericajbratton) - ejbratton@eagles.usi.edu <br/>
 
 Project Link: [GitHub](https://github.com/VincentParsons/DigSig)
 
