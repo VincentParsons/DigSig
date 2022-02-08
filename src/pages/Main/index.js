@@ -14,6 +14,7 @@ import {
 
 import { SignContainer, PdfContainer, SignButton } from './styles';
 import Container from '../../components/Container';
+import LeftSignBar from "./LeftSignBar";
 
 export default class Main extends Component {
   state = {
@@ -49,7 +50,6 @@ export default class Main extends Component {
       const pngDims = pngImage.scale(0.17);
 
       const pages = pdfDoc.getPages();
-      const page = pdfDoc.addPage()
       const firstPage = pages[0]
 
         firstPage.drawImage(pngImage, {
