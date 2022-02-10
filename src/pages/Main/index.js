@@ -14,7 +14,8 @@ import {
 
 import { SignContainer, PdfContainer, SignButton } from './styles';
 import Container from '../../components/Container';
-import LeftSignBar from "./LeftSignBar";
+import LeftSignBar from "./Components/LeftSignBar";
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 export default class Main extends Component {
   state = {
@@ -104,6 +105,14 @@ export default class Main extends Component {
     return (
 
       <Container>
+<>
+        <Router>
+          <LeftSignBar />
+          <Switch>
+            <Route path ='/' />
+          </Switch>
+        </Router>
+      </>
 
       <h1>
 
