@@ -95,27 +95,29 @@ export default class Main extends Component {
   };
 
 
- 
+ getPosition = (event) => {
+   console.log("x coords: " + event.clientX + " y coors: " + event.clientY);
+ }
 
   
   render() {
     const { signing, pdf } = this.state;
+    var loading = false;
     const { x, y } = this.state;
     return (
 
       <Container>
 
-      <h1>
-
+        <h1>
           <FaFileSignature />
 
           <a href="/"> digital-signature</a>
-          <input type="file" onChange={this.handleChange} />
+          <input type="file" onChange={this.myFunction} />
         </h1>
 
         <PdfContainer>
-          
-          
+
+          <button draggable="true" onDragStart={this.getPosition} onDragEnd={this.getPosition}>Drag Me</button> 
           <iframe title="pdframe" src={pdf} />
 
           
@@ -133,7 +135,7 @@ export default class Main extends Component {
               <FaEraser color="#fff" size={14} />
             </button>
               
-            <SignButton onClick={this.trim} loading={signing}>
+            <SignButton onClick={this.trim} disabled={signing}>
               {signing ? (
                 <FaSpinner color="#fff" size={14} />
               ) : (

@@ -133,7 +133,7 @@ Distributed under the Apache 2.0 License. See `LICENSE.txt` for more information
 
 <!-- CONTACT -->
 ## Contact
-
+Jakeb Roos-Williams - [LinkedIn](https://www.linkedin.com/in/jakeb-williams-2a134914a/) - jdrooswill@eagles.usi.edu <br/>
 Vincent Parsons - [LinkedIn](www.linkedin.com/in/vwparsons) - vwparsons@eagles.usi.edu <br/>
 Erica Bratton - [LinkedIn] (www.linkedin.com/in/ericajbratton) - ejbratton@eagles.usi.edu <br/>
 
