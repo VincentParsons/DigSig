@@ -15,7 +15,7 @@ import {
 import { SignContainer, PdfContainer, SignButton } from "./styles";
 import Container from "../../components/Container";
 import Navbar from "./Components/Navbar";
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 export default class Main extends Component {
   state = {
@@ -106,13 +106,13 @@ export default class Main extends Component {
     return (
       <Container>
         <>
-        <Router>
-        <Navbar />
+          <Router>
+            <Navbar />
 
-        <Switch>
-          <Route path='/' />
-        </Switch>
-        </Router>
+            <Switch>
+              <Route path="/" />
+            </Switch>
+          </Router>
         </>
 
         <h1>
