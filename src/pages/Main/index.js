@@ -58,7 +58,7 @@ export default class Main extends Component {
         width: pngDims.width,
         height: pngDims.height,
       });
-f
+      
       const timestamp = Date.now(); // This would be the timestamp you want to format
 
       var ts = new Intl.DateTimeFormat("en-US", {
