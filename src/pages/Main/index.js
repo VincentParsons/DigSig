@@ -16,12 +16,14 @@ import { SignContainer, PdfContainer, SignButton } from "./styles";
 import Container from "../../components/Container";
 import Navbar from "./Components/Navbar";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-
 export default class Main extends Component {
   state = {
     signing: false,
     pdf: null,
   };
+
+  //intial value of textField counter
+  i=0;
 
   sigPad = {};
 
@@ -44,12 +46,12 @@ export default class Main extends Component {
       .toDataURL("image/png");
 
     if (pdf) {
-      const pdfDoc = await PDFDocument.load(pdf);
+      this.pdfDoc = await PDFDocument.load(pdf);
 
-      const pngImage = await pdfDoc.embedPng(trimmedDataURL);
+      const pngImage = await this.pdfDoc.embedPng(trimmedDataURL);
       const pngDims = pngImage.scale(0.17);
 
-      const pages = pdfDoc.getPages();
+      const pages = this.pdfDoc.getPages();
       const firstPage = pages[0];
 
       firstPage.drawImage(pngImage, {
@@ -70,7 +72,7 @@ export default class Main extends Component {
         second: "2-digit",
       }).format(timestamp);
 
-      const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const helveticaFont = await this.pdfDoc.embedFont(StandardFonts.Helvetica);
 
       firstPage.drawText("Digital Signature Verified on " + ts, {
         x: 460,
@@ -80,7 +82,7 @@ export default class Main extends Component {
         color: rgb(0.95, 0.1, 0.1),
       });
 
-      const pdfBytes = await pdfDoc.saveAsBase64({ dataUri: true });
+      const pdfBytes = await this.pdfDoc.saveAsBase64({ dataUri: true });
 
       // await this.sleep(300);
       this.setState({ pdf: pdfBytes, signing: false });
@@ -101,8 +103,43 @@ export default class Main extends Component {
   };
 
 
- getPosition = (event) => {
+ getPosition = async (event) => {
+   this.i++;
+   const {pdf} = this.state;
    console.log("x coords: " + event.clientX + " y coors: " + event.clientY);
+   // frame
+   const frame = document.getElementById("pdframe");
+   // boundaries for frame
+   const frameBoundaries = frame.getBoundingClientRect();
+   console.log(frameBoundaries);
+   const pdfDoc1 = await PDFDocument.load(pdf);
+   // do calculation for where to place the pdf element
+   // position - frame 
+   const elX = (event.clientX - frameBoundaries.left);
+   const elY = (event.clientY - frameBoundaries.top);
+
+   console.log(elX + " "+ elY);
+   const form = pdfDoc1.getForm(); 
+   const textField = form.createTextField(`sign${this.i}`);
+   textField.setText('Dropped');
+   const pages = pdfDoc1.getPages();
+   textField.addToPage(pages[0], {
+      x: elX,
+      y: elY,
+      width:150,
+      height: 50
+   });
+   const pdfBytes1 = await pdfDoc1.saveAsBase64({ dataUri: true });
+
+   // await this.sleep(300);
+   this.setState({ pdf: pdfBytes1, signing: false });
+
+ }
+
+ getFrame(){
+  const frame = document.getElementById("pdframe");
+  frame.contentWindow.postMessage('*');
+  console.log(frame.contentWindow.document);
  }
 
   
@@ -114,7 +151,7 @@ export default class Main extends Component {
       <Container>
         <>
           <Router>
-            <Navbar />
+             <Navbar />
 
             <Switch>
               <Route path="/" />
@@ -126,13 +163,13 @@ export default class Main extends Component {
           <FaFileSignature />
 
           <a href="/"> digital-signature</a>
-          <input type="file" onChange={this.myFunction} />
+          <input type="file" onChange={this.handleChange} />
         </h1>
 
         <PdfContainer>
+          <button style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Drag Me</button> 
 
-          <button draggable="true" onDragStart={this.getPosition} onDragEnd={this.getPosition}>Drag Me</button> 
-          <iframe title="pdframe" src={pdf} />
+          <iframe id="pdframe" title="pdframe" src={pdf} />
         </PdfContainer>
 
         <SignContainer>
