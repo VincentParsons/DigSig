@@ -109,6 +109,7 @@ export default class Main extends Component {
    console.log("x coords: " + event.clientX + " y coors: " + event.clientY);
    // frame
    const frame = document.getElementById("pdframe");
+   const dragBtn = document.getElementById("dragMeBtn");
    // boundaries for frame
    const frameBoundaries = frame.getBoundingClientRect();
    console.log(frameBoundaries);
@@ -123,12 +124,18 @@ export default class Main extends Component {
    const textField = form.createTextField(`sign${this.i}`);
    textField.setText('Dropped');
    const pages = pdfDoc1.getPages();
-   textField.addToPage(pages[0], {
-      x: elX,
-      y: elY,
-      width:150,
-      height: 50
-   });
+  //  textField.addToPage(pages[0], {
+  //     x: elX-500,
+  //     y: -elY,
+  //     width:150,
+  //     height: 50
+  //  });
+  const xy= (((dragBtn.getBoundingClientRect().height*2)+event.clientY)*4);
+  console.log(xy);
+  textField.addToPage(pages[0], {
+     x: (event.clientX-frameBoundaries.left)-20,
+     y: 0
+   })
    const pdfBytes1 = await pdfDoc1.saveAsBase64({ dataUri: true });
 
    // await this.sleep(300);
@@ -142,6 +149,69 @@ export default class Main extends Component {
   console.log(frame.contentWindow.document);
  }
 
+
+getImagePreview(e)
+ {
+   console.log(e.target.files[0])
+ } 
+ 
+ findMe = (event) => { // event parameter = e: event
+
+  // read pdf
+  // create newFileReader
+  const reader = new FileReader();
+  // get file
+  const file = event.target.files[0];
+  var pdf2;
+  var pdfDoc2;
+  var pages;
+  reader.onloadend = async() => {
+    pdf2 = reader.result;
+    // get pages
+    pdfDoc2 = await PDFDocument.load(pdf2);
+    pages = pdfDoc2.getPages();
+    console.log(pages.length);
+    this.generateDivs(pages);
+  };
+
+  reader.readAsDataURL(file);
+
+  
+  // generate divs by the pages
+  //div will be named document page
+
+  // var image = URL.createObjectURL(event.target.files[0]);
+  // var imagediv = document.getElementById('preview');
+  // var newImage = document.createElement('img');
+  // newImage.style.width = "100%";
+  // newImage.style.height = "600px";
+  // // newImage.src.image;  // get the value, not doing anything with it
+  // newImage.src = image;
+  // imagediv.appendChild(newImage);
+ }
+
+ generateDivs(pdfPages){
+  var i = 0;
+  var documentEditor = document.getElementById("preview");
+  console.log(pdfPages.length);
+  while(i < pdfPages.length){
+    var div = document.createElement('div');
+    div.id = "document-page-"+i;
+    div.innerHTML = "Jakeb";
+    div.style.width = "100%";
+    div.style.height = "600px";
+    //var pdf4 = URL.createObjectURL(pdfPages[i]);
+    var newImage = document.createElement('img');
+    newImage.style.width = "100%";
+    newImage.style.height = "100%";
+    newImage.src = pdfPages[i]; 
+    div.appendChild();
+    documentEditor.appendChild(div);
+    i++;
+  }
+  console.log("completed generating divs");
+ }
+
   
   render() {
     const { signing, pdf } = this.state;
@@ -151,7 +221,7 @@ export default class Main extends Component {
       <Container>
         <>
           <Router>
-             <Navbar />
+             {/* <Navbar /> */}
 
             <Switch>
               <Route path="/" />
@@ -165,12 +235,45 @@ export default class Main extends Component {
           <a href="/"> digital-signature</a>
           <input type="file" onChange={this.handleChange} />
         </h1>
+        <button id="Signature" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Signature</button> 
+        <button id="Initials" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Initials</button> 
+        <button id="Text" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Text</button> 
+        <button id="Date" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Date</button> 
+        <button id="Name" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Name</button> 
+        <button id="Checkbox" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Checkbox</button> 
+        <button id="Radio Button" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Radio Button</button> 
+        <object data="data/contract.pdf" type="application/pdf" width="300" height="200">
+<a href="data/contract.pdf">test.pdf</a>
+</object>
+    <div className="container">
+      <h2>Preview Image</h2>
+      <hr></hr>
+            <div className="form-group">
+              {/* <input type="file" name="upload_file" className="form-control" placeholder="Enter Name" id="upload_file" onchange="getImagePreview(e)"/> */}
+              <input type="file" onChange={this.findMe}/>
+            </div>
+            <div id="preview">
+
+
+            </div>
+            <div className="form-group">
+              <input type="submit" name="submit" className="btn btn-primary"></input>
+            </div>
+        
+    </div>
+  
+      
+     {/* <head> */}
+      {/* <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+      <script type="text/javascript">
+
+      </script> */}
+      {/* </head> */}
 
         <PdfContainer>
-          <button style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Drag Me</button> 
-
           <iframe id="pdframe" title="pdframe" src={pdf} />
-        </PdfContainer>
+          {/* <div>Div Mockup</div> */}
+        </PdfContainer> 
 
         <SignContainer>
           <SignatureCanvas
