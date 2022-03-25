@@ -14,7 +14,6 @@ import {
 
 import { SignContainer, PdfContainer, SignButton } from "./styles";
 import Container from "../../components/Container";
-import Navbar from "./Components/Navbar";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 export default class Main extends Component {
   state = {
@@ -155,8 +154,8 @@ getImagePreview(e)
    console.log(e.target.files[0])
  } 
  
- findMe = (event) => { // event parameter = e: event
-
+ // reads file and generate divs for each page of the pdf 
+ readFileToGenerate = (event) => { // event parameter = e: event
   // read pdf
   // create newFileReader
   const reader = new FileReader();
@@ -175,41 +174,30 @@ getImagePreview(e)
   };
 
   reader.readAsDataURL(file);
-
-  
-  // generate divs by the pages
-  //div will be named document page
-
-  // var image = URL.createObjectURL(event.target.files[0]);
-  // var imagediv = document.getElementById('preview');
-  // var newImage = document.createElement('img');
-  // newImage.style.width = "100%";
-  // newImage.style.height = "600px";
-  // // newImage.src.image;  // get the value, not doing anything with it
-  // newImage.src = image;
-  // imagediv.appendChild(newImage);
  }
 
+ // generate DIVs for each page of pdf 
  generateDivs(pdfPages){
   var i = 0;
   var documentEditor = document.getElementById("preview");
-  console.log(pdfPages.length);
+  documentEditor.innerHTML = "";
   while(i < pdfPages.length){
     var div = document.createElement('div');
     div.id = "document-page-"+i;
-    div.innerHTML = "Jakeb";
-    div.style.width = "100%";
+    div.innerHTML = `page ${i}`;
+    div.style.borderColor = "black";
+    div.style.borderStyle = "solid";
+    div.style.borderWidth = "1px";
+    div.style.marginBottom = "20px";
+    div.contentEditable = true;
     div.style.height = "600px";
-    //var pdf4 = URL.createObjectURL(pdfPages[i]);
     var newImage = document.createElement('img');
-    newImage.style.width = "100%";
     newImage.style.height = "100%";
-    newImage.src = pdfPages[i]; 
-    div.appendChild();
+    newImage.src = "";
+    div.appendChild(newImage);
     documentEditor.appendChild(div);
     i++;
   }
-  console.log("completed generating divs");
  }
 
   
@@ -219,21 +207,10 @@ getImagePreview(e)
     const { x, y } = this.state;
     return (
       <Container>
-        <>
-          <Router>
-             {/* <Navbar /> */}
-
-            <Switch>
-              <Route path="/" />
-            </Switch>
-          </Router>
-        </>
-
         <h1>
-          <FaFileSignature />
-
-          <a href="/"> digital-signature</a>
-          <input type="file" onChange={this.handleChange} />
+        <FaFileSignature />
+        <a href="/"> digital-signature</a>
+        <input type="file" onChange={this.handleChange} />
         </h1>
         <button id="Signature" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Signature</button> 
         <button id="Initials" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Initials</button> 
@@ -242,34 +219,13 @@ getImagePreview(e)
         <button id="Name" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Name</button> 
         <button id="Checkbox" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Checkbox</button> 
         <button id="Radio Button" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Radio Button</button> 
-        <object data="data/contract.pdf" type="application/pdf" width="300" height="200">
-<a href="data/contract.pdf">test.pdf</a>
-</object>
-    <div className="container">
-      <h2>Preview Image</h2>
-      <hr></hr>
-            <div className="form-group">
-              {/* <input type="file" name="upload_file" className="form-control" placeholder="Enter Name" id="upload_file" onchange="getImagePreview(e)"/> */}
-              <input type="file" onChange={this.findMe}/>
-            </div>
-            <div id="preview">
 
-
-            </div>
-            <div className="form-group">
-              <input type="submit" name="submit" className="btn btn-primary"></input>
-            </div>
-        
-    </div>
-  
-      
-     {/* <head> */}
-      {/* <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-      <script type="text/javascript">
-
-      </script> */}
-      {/* </head> */}
-
+        <div className="form-group">
+          {/* <input type="file" name="upload_file" className="form-control" placeholder="Enter Name" id="upload_file" onchange="getImagePreview(e)"/> */}
+          <input type="file" onChange={this.readFileToGenerate}/>
+        </div>
+        <div id="preview">
+        </div>
         <PdfContainer>
           <iframe id="pdframe" title="pdframe" src={pdf} />
           {/* <div>Div Mockup</div> */}
@@ -285,8 +241,7 @@ getImagePreview(e)
           <div>
             <button type="button" onClick={this.clear} disabled={signing}>
               <FaEraser color="#fff" size={14} />
-            </button>
-              
+            </button>  
             <SignButton onClick={this.trim} disabled={signing}>
               {signing ? (
                 <FaSpinner color="#fff" size={14} />

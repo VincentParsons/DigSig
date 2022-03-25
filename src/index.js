@@ -6,12 +6,18 @@ import App from './App';
 import Main from "./pages/Main"
 import * as serviceWorker from './serviceWorker';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
+import LoginUI from './components/LoginUI/LoginUI';
+import RegisterUI from './components/RegisterUI/RegisterUI';
+import AdminUI from './components/AdminUI/AdminUI';
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Route exact path = "/editor" component = {Main} />
       <Route exact path = "/" component = {App} />
+      <Route exact path = "/LoginUI" component = {LoginUI} />
+      <Route exact path = "/RegisterUI" component = {RegisterUI} />
+      <Route exact path = "/AdminUI" component = {AdminUI} />
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
