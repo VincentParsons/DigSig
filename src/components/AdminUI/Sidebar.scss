@@ -9,12 +9,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-
-        .logo {
-            font-size: 20px;
-            font-weight: bold;
-            color: #6439ff;
-        }
     }
 
     hr {
@@ -49,15 +43,15 @@
                 }
 
                 .icon {
-                    font-size: 18px;
+                    font-size: 25px;
                     color: #7451f8;
                 }
 
                 span {
-                    font-size: 13px;
+                    font-size: 20px;
                     font-weight: 600;
                     color: #888;
-                    margin-left: 10px;
+                    margin-left: 1px;
                 }
             }
         }
