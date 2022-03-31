@@ -28,6 +28,9 @@ const Datatable = () => {
             >
               Delete
             </div>
+            <Link to="/editor" style={{ textDecoration: "none" }}>
+              <div className="shareButton">Share</div>
+            </Link>
           </div>
         );
       },
