@@ -170,33 +170,43 @@ getImagePreview(e)
     pdfDoc2 = await PDFDocument.load(pdf2);
     pages = pdfDoc2.getPages();
     console.log(pages.length);
-    this.generateDivs(pages);
+    this.generateDivs(pages, pdfDoc2);
   };
 
   reader.readAsDataURL(file);
  }
 
  // generate DIVs for each page of pdf 
- generateDivs(pdfPages){
+ generateDivs = async(pdfPages, srcpdf=null)=>{
   var i = 0;
   var documentEditor = document.getElementById("preview");
   documentEditor.innerHTML = "";
   while(i < pdfPages.length){
-    var div = document.createElement('div');
-    div.id = "document-page-"+i;
-    div.innerHTML = `page ${i}`;
-    div.style.borderColor = "black";
-    div.style.borderStyle = "solid";
-    div.style.borderWidth = "1px";
-    div.style.marginBottom = "20px";
-    div.contentEditable = true;
-    div.style.height = "600px";
-    var newImage = document.createElement('img');
-    newImage.style.height = "100%";
-    newImage.src = "";
-    div.appendChild(newImage);
-    documentEditor.appendChild(div);
-    i++;
+    let pdfNew =await PDFDocument.create();
+    const copiedPages = await pdfNew.copyPages(srcpdf, [i]);
+    const [firstPage] = copiedPages;
+    pdfNew.addPage(firstPage);
+    //console.log(copiedpages);
+    //let blob = new Blob([pdfNew], {type: 'application/pdf'});
+    const bytes = await pdfNew.saveAsBase64({ dataUri: true })
+      var div = document.createElement('div');
+      div.id = "document-page-"+i;
+      //const l = URL.createObjectURL(pdf);
+      //const l = URL.createObjectURL(blob);
+      div.innerHTML = `<iframe width='100%' height='100%' src=${bytes}></iframe>`;
+      div.style.borderColor = "black";
+      div.style.borderStyle = "solid";
+      div.style.borderWidth = "1px";
+      div.style.marginBottom = "20px";
+      div.contentEditable = true;
+      div.style.height = "600px";
+      // var newImage = document.createElement('img');
+      // newImage.style.height = "100%";
+      // newImage.src = URL.createObjectURL(blob);;
+      // div.appendChild(newImage);
+      documentEditor.appendChild(div);
+      pdfNew = null;
+      i++;
   }
  }
 
