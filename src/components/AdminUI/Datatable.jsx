@@ -4,7 +4,10 @@ import { userColumns, userRows } from "./datatablesource";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import Popup from "./Popup";
-import CloseIcon from '@mui/icons-material/Close';
+
+const sharedHandler = () => {
+  alert('Success, document has been shared!');
+}
 
 const Datatable = () => {
   const [buttonPopup, setButtonPopup] = useState(false);
@@ -43,7 +46,7 @@ const Datatable = () => {
                 name="email"
                 id="email"
               />
-              <button className="share-button">
+              <button onClick={sharedHandler} className="share-button">
                 Share
               </button>
             </Popup>
