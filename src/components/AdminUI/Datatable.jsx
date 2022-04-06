@@ -3,8 +3,12 @@ import { DataGrid } from "@mui/x-data-grid";
 import { userColumns, userRows } from "./datatablesource";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import Popup from "./Popup";
+import CloseIcon from '@mui/icons-material/Close';
 
 const Datatable = () => {
+  const [buttonPopup, setButtonPopup] = useState(false);
+
   const [data, setData] = useState(userRows);
 
   const handleDelete = (id) => {
@@ -28,9 +32,21 @@ const Datatable = () => {
             >
               Delete
             </div>
-            <Link to="/editor" style={{ textDecoration: "none" }}>
+            <Link onClick={() => setButtonPopup(true)} style={{ textDecoration: "none" }}>
               <div className="shareButton">Share</div>
             </Link>
+            <Popup trigger={buttonPopup} setTrigger={setButtonPopup}>
+              <h3>Share Document</h3>
+              <input className="input-share"
+                placeholder="Email"
+                type="email"
+                name="email"
+                id="email"
+              />
+              <button className="share-button">
+                Share
+              </button>
+            </Popup>
           </div>
         );
       },

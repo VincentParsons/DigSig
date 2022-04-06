@@ -1,9 +1,10 @@
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 import "./AdminUI.scss";
-import Datatable from "./Datatable"
+import Datatable from "./Datatable";
 
 const AdminUI = () => {
+
   return (
     <div className="home">
       <Sidebar />

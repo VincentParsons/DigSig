@@ -17,9 +17,6 @@
   align-items: center;
   background-clip: padding-box;
   background-color: #00dbeb;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
   box-sizing: border-box;
   color: #fff;
   cursor: pointer;

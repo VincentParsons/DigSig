@@ -1,8 +1,8 @@
 .datatable {
-  height: 600px;
+  height: 800px;
   padding: 20px;
-  
-  .datatableTitle{
+
+  .datatableTitle {
     width: 100%;
     font-size: 24px;
     color: gray;
@@ -11,7 +11,7 @@
     align-items: center;
     justify-content: space-between;
 
-    .link{
+    .link {
       text-decoration: none;
       color: green;
       font-size: 16px;
@@ -66,7 +66,7 @@
       border: 1px dotted rgba(0, 0, 139, 0.596);
       cursor: pointer;
     }
-    
+
     .deleteButton {
       padding: 2px 5px;
       border-radius: 5px;
@@ -80,6 +80,43 @@
       color: rgba(8, 177, 73, 0.596);
       border: 1px dotted rgba(8, 177, 73, 0.596);
       cursor: pointer;
+    }
+    .input-share {
+      display: flex;
+      justify-content: center;
+      min-width: 18em;
+      height: 50px;
+      padding: 0px 10px;
+      font-size: 16px;
+      font-family: "Open Sans", sans-serif;
+      background-color: #f3f3f3;
+      border: 0;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      transition: all 250ms ease-in-out;
+      border-radius: 12px;
+    }
+    .share-button {
+      align-items: center;
+      background-clip: padding-box;
+      background-color: #00dbeb;
+      box-sizing: border-box;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      font-size: 14px;
+      font-weight: 600;
+      justify-content: center;
+      line-height: 1.25;
+      min-height: 3rem;
+      padding: 15px 50px;
+      position: relative;
+      text-decoration: none;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      vertical-align: baseline;
+      width: auto;
     }
   }
 }
