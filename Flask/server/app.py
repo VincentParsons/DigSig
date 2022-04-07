@@ -32,13 +32,13 @@ def get_current_user():
 
 @app.route("/register", methods=["POST"])
 def register_user():
-    email = request.json["email"]
-    password = request.json["password"]
+    email = request.form["email"]
+    password = request.form["password"]
 
     user_exists = User.query.filter_by(email=email).first() is not None
 
     if user_exists:
-        return jsonify({"error": "User already exists"}), 409
+        return redirect("http://localhost:3000/LoginUI")
 
     hashed_password = bcrypt.generate_password_hash(password)
     new_user = User(email=email, password=hashed_password)
@@ -83,8 +83,8 @@ def send_email():
     docID = request.form["doc_id"]
     studName = request.form["stud_name"]
     handler = EmailHandler()
-    handler.send_email(sendToEmail, f"Document {docID}", f"Hello, {sendToEmail}! \n\nYou were sent a document from {studName} with ID {docID}. Refer to the attachments for the document.\n\nHave a great day!")
-    return redirect("http://localhost:3000/AdminUi")
+    handler.send_email(sendToEmail, f"Document {docID}", f"Hello, {sendToEmail}! \n\nYou were sent a document from {studName} with Document ID {docID}. Refer to the attachments for the document.\n\nPlease return to DigSig to sign the document.\n\nHave a great day!")
+    return redirect("http://localhost:3000/AdminUI")
     
 
 if __name__ == "__main__":
