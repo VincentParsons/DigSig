@@ -1,7 +1,8 @@
-from flask import Flask, request, jsonify, session
+from flask import Flask, redirect, request, jsonify, session
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS, cross_origin
 from flask_session import Session
+from email_handler import EmailHandler
 from config import ApplicationConfig
 from models import db, User
 
@@ -75,6 +76,16 @@ def login_user():
 def logout_user():
     session.pop("user_id")
     return "200"
+
+@app.route("/send-email", methods=["POST"])
+def send_email():
+    sendToEmail = request.form["email"]
+    docID = request.form["doc_id"]
+    studName = request.form["stud_name"]
+    handler = EmailHandler()
+    handler.send_email(sendToEmail, f"Document {docID}", f"Hello, {sendToEmail}! \n\nYou were sent a document from {studName} with ID {docID}. Refer to the attachments for the document.\n\nHave a great day!")
+    return redirect("http://localhost:3000/AdminUi")
+    
 
 if __name__ == "__main__":
     app.run(debug=True)
