@@ -19,8 +19,8 @@ export default class Main extends Component {
   state = {
     signing: false,
     pdf: null,
+    list:[]
   };
-
   //intial value of textField counter
   i=0;
 
@@ -44,7 +44,7 @@ export default class Main extends Component {
       .getTrimmedCanvas()
       .toDataURL("image/png");
 
-    if (pdf) {
+    if (pdf) { // if the pdf has a value
       this.pdfDoc = await PDFDocument.load(pdf);
 
       const pngImage = await this.pdfDoc.embedPng(trimmedDataURL);
@@ -61,7 +61,6 @@ export default class Main extends Component {
       });
       
       const timestamp = Date.now(); // This would be the timestamp you want to format
-
       var ts = new Intl.DateTimeFormat("en-US", {
         year: "numeric",
         month: "2-digit",
@@ -102,9 +101,26 @@ export default class Main extends Component {
   };
 
 
- getPosition = async (event) => {
-   this.i++;
+ getPosition = async (event) =>{
+  // creates a mutable version of the array since it's immutable
+   var newArray = this.state.list.slice();
+  // creates entry variable
+   var entry = {type: event.target.id, x: event.clientX, y: event.clientY};   
+   // pushes the entry to newArray
+   newArray.push(entry);
+   // sets the new state for list
+   this.setState({list: newArray});
+    var checkbox;
+    var sig;
+    var radio;
+    var text;
+
+
+  
+  this.i++;
+
    const {pdf} = this.state;
+   if(pdf){
    console.log("x coords: " + event.clientX + " y coors: " + event.clientY);
    // frame
    const frame = document.getElementById("pdframe");
@@ -120,6 +136,24 @@ export default class Main extends Component {
 
    console.log(elX + " "+ elY);
    const form = pdfDoc1.getForm(); 
+
+    if(event.target.id=="Signature"){
+        
+    }
+
+    if(event.target.id=="Text"){
+      text = form.createTextField(`best.gundam${this.i}`)
+    }
+
+    if(event.target.id="Checkbox"){
+      checkbox = form.createCheckBox(`checkbox${this.i}`);
+    }
+
+    if(event.target.id="RadioBtn"){
+      radio = form.createRadioGroup(`best.gundam${this.i}`);
+    }
+
+
    const textField = form.createTextField(`sign${this.i}`);
    textField.setText('Dropped');
    const pages = pdfDoc1.getPages();
@@ -139,13 +173,18 @@ export default class Main extends Component {
 
    // await this.sleep(300);
    this.setState({ pdf: pdfBytes1, signing: false });
-
+  }
  }
 
  getFrame(){
   const frame = document.getElementById("pdframe");
   frame.contentWindow.postMessage('*');
   console.log(frame.contentWindow.document);
+ }
+
+ ShowList(){
+   console.log("This is the new list");
+  console.log(this.state.list);
  }
 
 
@@ -176,6 +215,41 @@ getImagePreview(e)
   reader.readAsDataURL(file);
  }
 
+
+
+  newSig = async() =>
+  {
+    // get frame where pdf lives
+    // [0,1]
+    var frame = document.getElementById("document-frame-0");
+
+    // load pdf document
+    var pdfDoc1 = await PDFDocument.load(frame.src);
+
+    // copying the trim id
+    const trimmedDataURL = this.sigPad
+    .getTrimmedCanvas()
+    .toDataURL("image/png");
+
+    // embeds images
+    const pngImage = await pdfDoc1.embedPng(trimmedDataURL);
+    const pngDims = pngImage.scale(0.17);
+    const pages = pdfDoc1.getPages();
+    console.log(pages);
+    // draws image to second page
+    pages[0].drawImage(pngImage, {
+      x: 445,
+      y: 78,
+      width: pngDims.width,
+      height: pngDims.height,
+    });
+
+    const pdfBytes = await pdfDoc1.saveAsBase64({ dataUri: true });
+    // setting source to the new bytes of the new pdf.
+    frame.src = pdfBytes;
+  }
+
+ 
  // generate DIVs for each page of pdf 
  generateDivs = async(pdfPages, srcpdf=null)=>{
   var i = 0;
@@ -187,23 +261,16 @@ getImagePreview(e)
     const [firstPage] = copiedPages;
     pdfNew.addPage(firstPage);
     //console.log(copiedpages);
-    //let blob = new Blob([pdfNew], {type: 'application/pdf'});
     const bytes = await pdfNew.saveAsBase64({ dataUri: true })
       var div = document.createElement('div');
       div.id = "document-page-"+i;
-      //const l = URL.createObjectURL(pdf);
-      //const l = URL.createObjectURL(blob);
-      div.innerHTML = `<iframe width='100%' height='100%' src=${bytes}></iframe>`;
+      div.innerHTML = `<iframe id='document-frame-${i}' width='100%' height='100%' src=${bytes}></iframe>`;
       div.style.borderColor = "black";
       div.style.borderStyle = "solid";
       div.style.borderWidth = "1px";
       div.style.marginBottom = "20px";
       div.contentEditable = true;
       div.style.height = "600px";
-      // var newImage = document.createElement('img');
-      // newImage.style.height = "100%";
-      // newImage.src = URL.createObjectURL(blob);;
-      // div.appendChild(newImage);
       documentEditor.appendChild(div);
       pdfNew = null;
       i++;
@@ -223,22 +290,22 @@ getImagePreview(e)
         <input type="file" onChange={this.handleChange} />
         </h1>
         <button id="Signature" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Signature</button> 
-        <button id="Initials" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Initials</button> 
         <button id="Text" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Text</button> 
-        <button id="Date" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Date</button> 
-        <button id="Name" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Name</button> 
         <button id="Checkbox" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Checkbox</button> 
-        <button id="Radio Button" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Radio Button</button> 
-
+        <button id="RadioBtn" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Radio Button</button> 
+        <button onClick={this.ShowList()}>Show List of Elements</button>
         <div className="form-group">
           {/* <input type="file" name="upload_file" className="form-control" placeholder="Enter Name" id="upload_file" onchange="getImagePreview(e)"/> */}
           <input type="file" onChange={this.readFileToGenerate}/>
+          {/* 
+              readFileToGenerate function is to generate multiple divs per pdfpage inside preview based on pdfdocument like dotloop line 270
+              handleChange function is the initial function for previewing the whole pdf inside the iframe pdframe line 273
+          */}
         </div>
-        <div id="preview">
-        </div>
+         <div id="preview">
+        </div> 
         <PdfContainer>
-          <iframe id="pdframe" title="pdframe" src={pdf} />
-          {/* <div>Div Mockup</div> */}
+          {/* <iframe id="pdframe" title="pdframe" src={pdf} /> */}
         </PdfContainer> 
 
         <SignContainer>
@@ -252,7 +319,7 @@ getImagePreview(e)
             <button type="button" onClick={this.clear} disabled={signing}>
               <FaEraser color="#fff" size={14} />
             </button>  
-            <SignButton onClick={this.trim} disabled={signing}>
+            <SignButton onClick={this.newSig} disabled={signing}>
               {signing ? (
                 <FaSpinner color="#fff" size={14} />
               ) : (
