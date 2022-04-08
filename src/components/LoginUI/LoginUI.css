@@ -1,6 +1,6 @@
 .login-container {
   width: 500px;
-  height: 500;
+  height: 500px;
   border: 1px transparent black;
   padding: 50px;
   margin: auto;
@@ -17,18 +17,14 @@
   align-items: center;
   background-clip: padding-box;
   background-color: #00dbeb;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
   box-sizing: border-box;
   color: #fff;
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
   font-size: 20px;
   font-weight: 600;
   justify-content: center;
   line-height: 1.25;
-  margin-left: 31%;
   min-height: 3rem;
   padding: 15px 50px;
   position: relative;
@@ -60,7 +56,8 @@
   margin-top: 50px;
 }
 .input {
-  margin-left: 14%;
+  display: flex;
+  justify-content: center;
   min-width: 18em;
   height: 50px;
   padding: 0px 10px;
@@ -72,9 +69,10 @@
   margin-bottom: 31px;
   transition: all 250ms ease-in-out;
 }
-.register_link {
-  margin-left: 40%;
-}
 .register_link:hover {
   color: darkblue;
+}
+.registertext {
+  display: flex;
+  justify-content:center
 }

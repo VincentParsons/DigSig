@@ -6,27 +6,29 @@ const RegisterUI = () => {
     <div className="login-container">
       <h1 className="heading">Signup Here!</h1>
       <div>
-        <input
-          className="input"
-          placeholder="Email"
-          type="text"
-          name="name"
-          id="name"
-        />
-        <div>
+        <form action="http://127.0.0.1:5000/register" method="post">
           <input
             className="input"
-            placeholder="Password"
-            type="password"
-            name="password"
-            id="password"
+            placeholder="Email"
+            type="text"
+            name="email"
+            id="name"
           />
-        </div>
-        <div className="signin_container">
-          <button className="signin_button" type="submit">
-            Register
-          </button>
-        </div>
+          <div>
+            <input
+              className="input"
+              placeholder="Password"
+              type="password"
+              name="password"
+              id="password"
+            />
+          </div>
+          <div className="signin_container">
+            <button className="signin_button" type="submit">
+              Register
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

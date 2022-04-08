@@ -9,6 +9,7 @@ import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import LoginUI from './components/LoginUI/LoginUI';
 import RegisterUI from './components/RegisterUI/RegisterUI';
 import AdminUI from './components/AdminUI/AdminUI';
+import ForgotPasswordUI from './components/ForgotPasswordUI/ForgotPasswordUI';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -18,6 +19,7 @@ ReactDOM.render(
       <Route exact path = "/LoginUI" component = {LoginUI} />
       <Route exact path = "/RegisterUI" component = {RegisterUI} />
       <Route exact path = "/AdminUI" component = {AdminUI} />
+      <Route exact path = "/ForgotPasswordUI" component = {ForgotPasswordUI} />
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
