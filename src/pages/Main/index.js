@@ -15,7 +15,6 @@ import {
 import { SignContainer, PdfContainer, SignButton } from "./styles";
 import Container from "../../components/Container";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { RadioGroup } from "@material-ui/core";
 export default class Main extends Component {
   state = {
     signing: false,
@@ -113,12 +112,12 @@ export default class Main extends Component {
    // pushes the entry to newArray
    newArray.push(entry);
    // sets the new state for list
-   this.setState({list: newArray});
+  //  this.setState({list: newArray});
     var checkbox;
     var sig;
     var radio;
     var text;
-  
+  console.log(this.state.list);
   this.i++;
 
   //  const {pdf} = this.state;
@@ -140,34 +139,34 @@ export default class Main extends Component {
   //  console.log(elX + " "+ elY);
   //  const form = pdfDoc1.getForm(); 
   const pages = pdfDoc1.getPages();
-  if(pages.length > 0){
+  console.log(event.target.id);
     if(event.target.id=="Signature"){
         
     }
 
     if(event.target.id=="Text"){
-      text = form.createTextField(`text.gundam${this.i}`)
+      text = form.createTextField(`text`)
       text.addToPage(pages[0], {
         x: 0,
         y: 0
-      })
+      });
     }
 
-    if(event.target.id="Checkbox"){
-      checkbox = form.createCheckBox(`checkbox${this.i}`);
+    if(event.target.id=="Checkbox"){
+      checkbox = form.createCheckBox(`checkbox1`);
       checkbox.addToPage(pages[0], {
         x:0,
-        y:0});
+        y:50});
     }
 
-    if(event.target.id="RadioBtn"){
-      radio = form.createRadioGroup(`radio.gundam${this.i}`);
-      radio.addOptionToPage('radioBtn', pages[0], {y:0, x:0} );
+    if(event.target.id=="RadioBtn"){
+      radio = form.createRadioGroup(`radio`);
+      radio.addOptionToPage('radioBtn1', pages[0], {y:100, x:0} );
     }
-  }
+
 
   const pdfBytes1 = await pdfDoc1.saveAsBase64({ dataUri: true });
-  this.setState({pdf: pdfBytes1});
+  this.setState({pdf: pdfBytes1, list: newArray});
 
 
   //  const textField = form.createTextField(`sign${this.i}`);
@@ -285,7 +284,7 @@ getImagePreview(e)
         {/* <div id="preview">
         </div> */}
         <PdfContainer>
-          <iframe id="pdframe" title="pdframe" src={pdf} />
+          <iframe id="pdframe" title="pdframe" src={pdf}></iframe>
           {/* <div>Div Mockup</div> */}
         </PdfContainer> 
 
