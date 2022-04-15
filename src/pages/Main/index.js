@@ -15,6 +15,7 @@ import {
 import { SignContainer, PdfContainer, SignButton } from "./styles";
 import Container from "../../components/Container";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { RadioGroup } from "@material-ui/core";
 export default class Main extends Component {
   state = {
     signing: false,
@@ -124,12 +125,13 @@ export default class Main extends Component {
   //  if(pdf){
   //  console.log("x coords: " + event.clientX + " y coors: " + event.clientY);
   //  // frame
-  //  const frame = document.getElementById("pdframe");
+   const frame = document.getElementById("pdframe");
   //  const dragBtn = document.getElementById("dragMeBtn");
   //  // boundaries for frame
   //  const frameBoundaries = frame.getBoundingClientRect();
   //  console.log(frameBoundaries);
-  //  const pdfDoc1 = await PDFDocument.load(pdf);
+   const pdfDoc1 = await PDFDocument.load(frame.src);
+    const form = pdfDoc1.getForm();
   //  // do calculation for where to place the pdf element
   //  // position - frame 
   //  const elX = (event.clientX - frameBoundaries.left);
@@ -137,22 +139,35 @@ export default class Main extends Component {
 
   //  console.log(elX + " "+ elY);
   //  const form = pdfDoc1.getForm(); 
-
-  //   if(event.target.id=="Signature"){
+  const pages = pdfDoc1.getPages();
+  if(pages.length > 0){
+    if(event.target.id=="Signature"){
         
-  //   }
+    }
 
-  //   if(event.target.id=="Text"){
-  //     text = form.createTextField(`best.gundam${this.i}`)
-  //   }
+    if(event.target.id=="Text"){
+      text = form.createTextField(`text.gundam${this.i}`)
+      text.addToPage(pages[0], {
+        x: 0,
+        y: 0
+      })
+    }
 
-  //   if(event.target.id="Checkbox"){
-  //     checkbox = form.createCheckBox(`checkbox${this.i}`);
-  //   }
+    if(event.target.id="Checkbox"){
+      checkbox = form.createCheckBox(`checkbox${this.i}`);
+      checkbox.addToPage(pages[0], {
+        x:0,
+        y:0});
+    }
 
-  //   if(event.target.id="RadioBtn"){
-  //     radio = form.createRadioGroup(`best.gundam${this.i}`);
-  //   }
+    if(event.target.id="RadioBtn"){
+      radio = form.createRadioGroup(`radio.gundam${this.i}`);
+      radio.addOptionToPage('radioBtn', pages[0], {y:0, x:0} );
+    }
+  }
+
+  const pdfBytes1 = await pdfDoc1.saveAsBase64({ dataUri: true });
+  this.setState({pdf: pdfBytes1});
 
 
   //  const textField = form.createTextField(`sign${this.i}`);
@@ -256,20 +271,19 @@ getImagePreview(e)
         <a href="/"> digital-signature</a>
         <input type="file" onChange={this.handleChange} />
         </h1>
-        <button id="Signature" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Signature</button> 
-        <button id="Initials" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Initials</button> 
-        <button id="Text" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Text</button> 
-        <button id="Date" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Date</button> 
-        <button id="Name" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Name</button> 
-        <button id="Checkbox" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Checkbox</button> 
-        <button id="Radio Button" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Radio Button</button> 
-
-        <div className="form-group">
+        <div style={{visibility: pdf!=null ? "visible":"hidden"}}>
+          <button id="Signature" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Signature</button> 
+          <button id="Text" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Text</button> 
+          <button id="Checkbox" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Checkbox</button> 
+          <button id="RadioBtn" style={{height: '30px', width : '100px'}} draggable="true" onDragEnd={this.getPosition}>Radio Button</button> 
+          {/* <button onClick={this.ShowList()}>Show List of Elements</button> */}
+        </div>
+        {/* <div className="form-group"> */}
           {/* <input type="file" name="upload_file" className="form-control" placeholder="Enter Name" id="upload_file" onchange="getImagePreview(e)"/> */}
-          <input type="file" onChange={this.readFileToGenerate}/>
-        </div>
-        <div id="preview">
-        </div>
+          {/* <input type="file" onChange={this.readFileToGenerate}/>
+        </div> */}
+        {/* <div id="preview">
+        </div> */}
         <PdfContainer>
           <iframe id="pdframe" title="pdframe" src={pdf} />
           {/* <div>Div Mockup</div> */}
