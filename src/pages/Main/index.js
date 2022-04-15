@@ -19,6 +19,7 @@ export default class Main extends Component {
   state = {
     signing: false,
     pdf: null,
+    list: []
   };
 
   //intial value of textField counter
@@ -103,43 +104,77 @@ export default class Main extends Component {
 
 
  getPosition = async (event) => {
-   this.i++;
-   const {pdf} = this.state;
-   console.log("x coords: " + event.clientX + " y coors: " + event.clientY);
-   // frame
-   const frame = document.getElementById("pdframe");
-   const dragBtn = document.getElementById("dragMeBtn");
-   // boundaries for frame
-   const frameBoundaries = frame.getBoundingClientRect();
-   console.log(frameBoundaries);
-   const pdfDoc1 = await PDFDocument.load(pdf);
-   // do calculation for where to place the pdf element
-   // position - frame 
-   const elX = (event.clientX - frameBoundaries.left);
-   const elY = (event.clientY - frameBoundaries.top);
+  // creates a mutable version of the array since it's immutable
+  var newArray = this.state.list.slice();
+  // creates entry variable
+   var entry = {type: event.target.id, x: event.screenX, y: event.screenY, page: null}; 
+  
+   // pushes the entry to newArray
+   newArray.push(entry);
+   // sets the new state for list
+   this.setState({list: newArray});
+    var checkbox;
+    var sig;
+    var radio;
+    var text;
+  
+  this.i++;
 
-   console.log(elX + " "+ elY);
-   const form = pdfDoc1.getForm(); 
-   const textField = form.createTextField(`sign${this.i}`);
-   textField.setText('Dropped');
-   const pages = pdfDoc1.getPages();
-  //  textField.addToPage(pages[0], {
-  //     x: elX-500,
-  //     y: -elY,
-  //     width:150,
-  //     height: 50
-  //  });
-  const xy= (((dragBtn.getBoundingClientRect().height*2)+event.clientY)*4);
-  console.log(xy);
-  textField.addToPage(pages[0], {
-     x: (event.clientX-frameBoundaries.left)-20,
-     y: 0
-   })
-   const pdfBytes1 = await pdfDoc1.saveAsBase64({ dataUri: true });
+  //  const {pdf} = this.state;
+  //  if(pdf){
+  //  console.log("x coords: " + event.clientX + " y coors: " + event.clientY);
+  //  // frame
+  //  const frame = document.getElementById("pdframe");
+  //  const dragBtn = document.getElementById("dragMeBtn");
+  //  // boundaries for frame
+  //  const frameBoundaries = frame.getBoundingClientRect();
+  //  console.log(frameBoundaries);
+  //  const pdfDoc1 = await PDFDocument.load(pdf);
+  //  // do calculation for where to place the pdf element
+  //  // position - frame 
+  //  const elX = (event.clientX - frameBoundaries.left);
+  //  const elY = (event.clientY - frameBoundaries.top);
 
-   // await this.sleep(300);
-   this.setState({ pdf: pdfBytes1, signing: false });
+  //  console.log(elX + " "+ elY);
+  //  const form = pdfDoc1.getForm(); 
 
+  //   if(event.target.id=="Signature"){
+        
+  //   }
+
+  //   if(event.target.id=="Text"){
+  //     text = form.createTextField(`best.gundam${this.i}`)
+  //   }
+
+  //   if(event.target.id="Checkbox"){
+  //     checkbox = form.createCheckBox(`checkbox${this.i}`);
+  //   }
+
+  //   if(event.target.id="RadioBtn"){
+  //     radio = form.createRadioGroup(`best.gundam${this.i}`);
+  //   }
+
+
+  //  const textField = form.createTextField(`sign${this.i}`);
+  //  textField.setText('Dropped');
+  //  const pages = pdfDoc1.getPages();
+  // //  textField.addToPage(pages[0], {
+  // //     x: elX-500,
+  // //     y: -elY,
+  // //     width:150,
+  // //     height: 50
+  // //  });
+  // const xy= (((dragBtn.getBoundingClientRect().height*2)+event.clientY)*4);
+  // console.log(xy);
+  // textField.addToPage(pages[0], {
+  //    x: (event.clientX-frameBoundaries.left)-20,
+  //    y: 0
+  //  })
+  //  const pdfBytes1 = await pdfDoc1.saveAsBase64({ dataUri: true });
+
+  //  // await this.sleep(300);
+  //  this.setState({ pdf: pdfBytes1, signing: false });
+  // }
  }
 
  getFrame(){
@@ -170,21 +205,30 @@ getImagePreview(e)
     pdfDoc2 = await PDFDocument.load(pdf2);
     pages = pdfDoc2.getPages();
     console.log(pages.length);
-    this.generateDivs(pages);
+    this.generateDivs(pages, pdfDoc2);
   };
 
   reader.readAsDataURL(file);
  }
 
- // generate DIVs for each page of pdf 
- generateDivs(pdfPages){
+ // generate DIVs for each page of pdf like dotloop
+// research included 15 hours
+// testing dotloop, reading sourcecode of dotloop, looking at our source,
+// comparing and contrasting source to programmatically create a mockup like dotloop
+// generating a div per pdf page
+ generateDivs = async (pdfPages, srcpdf)=>{
   var i = 0;
   var documentEditor = document.getElementById("preview");
   documentEditor.innerHTML = "";
   while(i < pdfPages.length){
+    let pdfNew = await PDFDocument.create();
+    const copiedPages = await pdfNew.copyPages(srcpdf, [i]);
+    const [firstPage] = copiedPages;
+    pdfNew.addPage(firstPage);
+    const bytes = await pdfNew.saveAsBase64({ dataUri: true })
     var div = document.createElement('div');
     div.id = "document-page-"+i;
-    div.innerHTML = `page ${i}`;
+    div.innerHTML = `<iframe src="${bytes}" width='100%' height='100%'></iframe>`;
     div.style.borderColor = "black";
     div.style.borderStyle = "solid";
     div.style.borderWidth = "1px";
