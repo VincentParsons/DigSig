@@ -107,7 +107,7 @@ const Main = () => {
             <button onClick={()=> setMode('dotloop')}>dotloop</button>
           <br/>
         </div>
-        {mode === "initial" ? <Initial setPdf={setPdf} pdf={pdf} /> : <DotLoopMockup setPdf={setPdf} pdf={pdf}></DotLoopMockup>}
+        {mode === "initial" ? <Initial setPdf={setPdf} pdf={pdf} /> : <div><DotLoopMockup></DotLoopMockup></div>}
         {/* <h1> */}
         <SignContainer>
           <SignatureCanvas

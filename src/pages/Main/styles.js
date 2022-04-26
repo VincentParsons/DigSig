@@ -44,9 +44,8 @@ export const PdfContainer = styled.div`
     border: 3px solid #eee;
     border-radius: 4px;
     background: white;
-    width: 100%;
-    height: 100%;
-    min-height: 500px;
+    width: 500px;
+    height: 640px;
     padding: 3px;
   }
 `;
