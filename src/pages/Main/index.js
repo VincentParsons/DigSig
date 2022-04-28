@@ -1,9 +1,11 @@
-import React, { Component } from "react";
-
-import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
-
+import React, {  useState, useRef } from "react";
 import fontkit from "@pdf-lib/fontkit";
 import SignatureCanvas from "react-signature-canvas";
+import DotLoopMockup from "./dotloop-Mockup";
+import Initial from "./initial";
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+
+
 import {
   FaPencilAlt,
   FaEraser,
@@ -16,43 +18,78 @@ import {
 import { SignContainer, PdfContainer, SignButton } from "./styles";
 import Container from "../../components/Container";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-export default class Main extends Component {
-  state = {
-    signing: false,
-    pdf: null,
-    list: []
-  };
+const Main = () => {
+
+  const [mode, setMode] = useState("initial")
+  const [signing, setSigning] = useState(false)
+  const [pdf, setPdf] = useState([])
+  const [pdfs, setPdfs] = useState([])
+
+  const [originalPdf, setOriginalPdf] = useState({})
+const [currentPage, setCurrentPage] = useState({})
+
 
   //intial value of textField counter
+<<<<<<< HEAD
   i = 0;
+=======
+  //var i=0;
+>>>>>>> dd7caaac2961c2facf34a2416ad444f5da93116f
 
-  sigPad = {};
+  const sigPad = useRef(null);
 
-  clear = () => {
-    this.sigPad.clear();
+  const clear = () => {
+    sigPad.current.clear();
   };
 
-  // sleep = ms => {
-  //   return new Promise(resolve => setTimeout(resolve, ms));
-  // };
+  const trim = async () => {
 
-  trim = async () => {
-    const { pdf } = this.state;
-
-    this.setState({ signing: true });
+    setSigning(true)
     const url = "https://pdf-lib.js.org/assets/ubuntu/Ubuntu-R.ttf";
 
-    const trimmedDataURL = this.sigPad
+    if(currentPage) {
+      const trimmedDataURL = sigPad
+      .current
       .getTrimmedCanvas()
       .toDataURL("image/png");
 
-    if (pdf) {
-      this.pdfDoc = await PDFDocument.load(pdf);
+    const loadedPdf = await PDFDocument.load(currentPage)
+    const form = loadedPdf.getForm()
+    const fields = form.getFields()
 
-      const pngImage = await this.pdfDoc.embedPng(trimmedDataURL);
+    const pdfPng = await loadedPdf.embedPng(trimmedDataURL)
+    const dims = pdfPng.scale(0.3)
+
+    fields.forEach(field => {
+      if(field.getName().includes('Signature')) {
+        const location = field.acroField.getWidgets()[0].getRectangle()
+
+        loadedPdf.getPage(0).drawImage(pdfPng, {
+          x: location.x,
+          y: location.y,
+          width: dims.width,
+          height: dims.height
+        })
+
+        form.removeField(field)
+      }
+    })
+
+    const pdfURI = await loadedPdf.saveAsBase64({dataUri: true})
+
+    setCurrentPage(pdfURI)
+    }
+
+    setSigning(false)
+    
+
+    /* if (pdf) {
+      const pdfDoc = await PDFDocument.load(pdf);
+
+      const pngImage = await pdfDoc.embedPng(trimmedDataURL);
       const pngDims = pngImage.scale(0.17);
 
-      const pages = this.pdfDoc.getPages();
+      const pages = pdfDoc.getPages();
       const firstPage = pages[0];
 
       firstPage.drawImage(pngImage, {
@@ -73,7 +110,7 @@ export default class Main extends Component {
         second: "2-digit",
       }).format(timestamp);
 
-      const helveticaFont = await this.pdfDoc.embedFont(StandardFonts.Helvetica);
+      const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
       firstPage.drawText("Digital Signature Verified on " + ts, {
         x: 460,
@@ -83,15 +120,17 @@ export default class Main extends Component {
         color: rgb(0.95, 0.1, 0.1),
       });
 
-      const pdfBytes = await this.pdfDoc.saveAsBase64({ dataUri: true });
+      const pdfBytes = await pdfDoc.saveAsBase64({ dataUri: true });
 
       // await this.sleep(300);
-      this.setState({ pdf: pdfBytes, signing: false });
+      setPdf(pdfBytes)
+      setSigning(false)
     } else {
-      this.setState({ signing: false });
-    }
+      setSigning(false);
+    } */
   };
 
+<<<<<<< HEAD
   handleChange = (e) => {
     const reader = new FileReader();
     const file = e.target.files[0];
@@ -262,10 +301,21 @@ export default class Main extends Component {
 
   render() {
     const { signing, pdf } = this.state;
+=======
+  
+
+
+ const ShowList = () => {
+  // console.log("This is the new list");
+ }
+  
+>>>>>>> dd7caaac2961c2facf34a2416ad444f5da93116f
     var loading = false;
-    const { x, y } = this.state;
+   // const { x, y } = this.state;
+
     return (
       <Container>
+<<<<<<< HEAD
         <form action="http://127.0.0.1:5000/save-pdf" method="post" enctype="multipart/form-data">
           <h1>
             <FaFileSignature />
@@ -319,7 +369,44 @@ export default class Main extends Component {
             </div>
           </SignContainer>
         </form>
+=======
+        <div>
+          Mode: 
+            <button onClick={()=> setMode('initial')}>initial</button>
+            <button onClick={()=> setMode('dotloop')}>dotloop</button>
+          <br/>
+        </div>
+        {mode === "initial" ? <Initial setPdf={setPdf} pdf={pdf} /> : 
+        <div>
+          <DotLoopMockup originalPdf={originalPdf} setOriginalPdf={setOriginalPdf} currentPage={currentPage} setCurrentPage={setCurrentPage}></DotLoopMockup>
+        </div>}
+        {/* <h1> */}
+        <SignContainer>
+          <SignatureCanvas
+            penColor="black"
+            ref={sigPad}
+          />
+          <div>
+            <button type="button" onClick={clear} disabled={signing}>
+              <FaEraser color="#fff" size={14} />
+            </button>  
+            <SignButton onClick={trim} disabled={signing}>
+              {signing ? (
+                <FaSpinner color="#fff" size={14} />
+              ) : (
+                <FaPencilAlt color="#fff" size={14} />
+              )}
+            </SignButton>
+            <button>
+              <a href={pdf} download>
+                <FaDownload color="#fff" size={14} />
+              </a>
+            </button>
+          </div>
+        </SignContainer>
+>>>>>>> dd7caaac2961c2facf34a2416ad444f5da93116f
       </Container>
     );
-  }
 }
+
+export default Main
