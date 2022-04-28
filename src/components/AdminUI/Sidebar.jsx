@@ -19,10 +19,12 @@ const Sidebar = () => {
             <span>Dashboard</span>
           </li>
           <p className="title">USER</p>
-          <li>
-            <AccountCircleOutlinedIcon className="icon" />
-            <span>Profile</span>
-          </li>
+          <a href="/">
+            <li>
+              <AccountCircleOutlinedIcon className="icon" />
+              <span>Home</span>
+            </li>
+          </a>
           <li>
             <ExitToAppIcon className="icon" />
             <span>Logout</span>

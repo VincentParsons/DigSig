@@ -20,6 +20,7 @@
     "chokidar": "^3.5.1",
     "downloadjs": "^1.4.7",
     "emailjs-com": "^2.6.4",
+    "fs": "^0.0.1-security",
     "node": "17.0.1",
     "particles-bg": "^2.5.5",
     "pdf-lib": "^1.17.1",

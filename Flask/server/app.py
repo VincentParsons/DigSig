@@ -1,16 +1,18 @@
+import random
+import string
 from flask import Flask, redirect, request, jsonify, session
 from flask_bcrypt import Bcrypt
-from flask_cors import CORS, cross_origin
 from flask_session import Session
 from email_handler import EmailHandler
 from config import ApplicationConfig
-from models import db, User
+from models import db, User, PDF, UserPDF
+import os
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.config.from_object(ApplicationConfig)
 
 bcrypt = Bcrypt(app)
-CORS(app, supports_credentials=True)
 server_session = Session(app)
 db.init_app(app)
 
@@ -47,15 +49,12 @@ def register_user():
     
     session["user_id"] = new_user.id
 
-    return jsonify({
-        "id": new_user.id,
-        "email": new_user.email
-    })
+    return redirect("http://localhost:3000/LoginUI")
 
 @app.route("/login", methods=["POST"])
 def login_user():
-    email = request.json["email"]
-    password = request.json["password"]
+    email = request.form["email"]
+    password = request.form["password"]
 
     user = User.query.filter_by(email=email).first()
 
@@ -67,10 +66,34 @@ def login_user():
     
     session["user_id"] = user.id
 
-    return jsonify({
-        "id": user.id,
-        "email": user.email
-    })
+    return redirect("http://localhost:3000/AdminUI")
+
+@app.route("/save-pdf", methods=["POST"])
+def save_pdf():
+    file = request.files["pdf"]
+    file_path = "./public/pdfs/" + gen_pdf_name() + ".pdf"
+    
+    pdf = PDF(link=file_path)
+    db.session.add(pdf)
+    counselor = User.query.filter_by(email="digsigsup@gmail.com").first()
+    user_pdf = UserPDF(user_id=counselor.id, pdf_id=pdf.id)
+    db.session.add(user_pdf)
+    db.session.commit()
+
+    file.save(file_path)
+    return redirect("http://localhost:3000/")
+
+@app.route("/get-pdfs", methods=["POST"])
+def get_pdfs():
+    user_id = request.json["user_id"]
+
+    user_pdfs = UserPDF.query.filter_by(user_id=user_id).all()
+    pdf_list = []
+    for record in user_pdfs:
+        pdf_list.append(PDF.query.filter_by(id=record.pdf_id).first().link)
+    return jsonify(pdf_list)
+
+
 
 @app.route("/logout", methods=["POST"])
 def logout_user():
@@ -86,6 +109,9 @@ def send_email():
     handler.send_email(sendToEmail, f"Document {docID}", f"Hello, {sendToEmail}! \n\nYou were sent a document from {studName} with Document ID {docID}. Refer to the attachments for the document.\n\nPlease return to DigSig to sign the document.\n\nHave a great day!")
     return redirect("http://localhost:3000/AdminUI")
     
+def gen_pdf_name():
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(10))
 
 if __name__ == "__main__":
     app.run(debug=True)

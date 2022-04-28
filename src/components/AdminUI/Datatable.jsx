@@ -9,6 +9,10 @@ const sharedHandler = () => {
   alert('Success, document has been shared!');
 }
 
+const PDFHandler = () => {
+  window.open("./pdfs/sample.pdf");
+}
+
 const Datatable = () => {
   const [buttonPopup, setButtonPopup] = useState(false);
 
@@ -26,7 +30,7 @@ const Datatable = () => {
       renderCell: (params) => {
         return (
           <div className="cellAction">
-            <Link to="/editor" style={{ textDecoration: "none" }}>
+            <Link onClick={PDFHandler} style={{ textDecoration: "none" }}>
               <div className="viewButton">View</div>
             </Link>
             <div
