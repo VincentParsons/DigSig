@@ -40,7 +40,7 @@ export const PdfContainer = styled.div`
   display: flex;
   flex-direction: column;
 
-  iframe {
+  embed {
     border: 3px solid #eee;
     border-radius: 4px;
     background: white;

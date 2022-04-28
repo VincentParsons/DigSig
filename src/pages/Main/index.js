@@ -24,25 +24,61 @@ const Main = () => {
   const [pdf, setPdf] = useState([])
   const [pdfs, setPdfs] = useState([])
 
+  const [originalPdf, setOriginalPdf] = useState({})
+const [currentPage, setCurrentPage] = useState({})
+
+
   //intial value of textField counter
   //var i=0;
 
   const sigPad = useRef(null);
 
   const clear = () => {
-    sigPad.clear();
+    sigPad.current.clear();
   };
 
   const trim = async () => {
 
-    this.setState({ signing: true });
+    setSigning(true)
     const url = "https://pdf-lib.js.org/assets/ubuntu/Ubuntu-R.ttf";
 
-    const trimmedDataURL = sigPad
+    if(currentPage) {
+      const trimmedDataURL = sigPad
+      .current
       .getTrimmedCanvas()
       .toDataURL("image/png");
 
-    if (pdf) {
+    const loadedPdf = await PDFDocument.load(currentPage)
+    const form = loadedPdf.getForm()
+    const fields = form.getFields()
+
+    const pdfPng = await loadedPdf.embedPng(trimmedDataURL)
+    const dims = pdfPng.scale(0.3)
+
+    fields.forEach(field => {
+      if(field.getName().includes('Signature')) {
+        const location = field.acroField.getWidgets()[0].getRectangle()
+
+        loadedPdf.getPage(0).drawImage(pdfPng, {
+          x: location.x,
+          y: location.y,
+          width: dims.width,
+          height: dims.height
+        })
+
+        form.removeField(field)
+      }
+    })
+
+    const pdfURI = await loadedPdf.saveAsBase64({dataUri: true})
+
+    setCurrentPage(pdfURI)
+    }
+
+    setSigning(false)
+    
+
+    /* if (pdf) {
       const pdfDoc = await PDFDocument.load(pdf);
 
       const pngImage = await pdfDoc.embedPng(trimmedDataURL);
@@ -86,7 +122,7 @@ const Main = () => {
       setSigning(false)
     } else {
       setSigning(false);
-    }
+    } */
   };
 
   
@@ -107,7 +143,10 @@ const Main = () => {
             <button onClick={()=> setMode('dotloop')}>dotloop</button>
           <br/>
         </div>
-        {mode === "initial" ? <Initial setPdf={setPdf} pdf={pdf} /> : <div><DotLoopMockup></DotLoopMockup></div>}
+        {mode === "initial" ? <Initial setPdf={setPdf} pdf={pdf} /> : 
+        <div>
+          <DotLoopMockup originalPdf={originalPdf} setOriginalPdf={setOriginalPdf} currentPage={currentPage} setCurrentPage={setCurrentPage}></DotLoopMockup>
+        </div>}
         {/* <h1> */}
         <SignContainer>
           <SignatureCanvas

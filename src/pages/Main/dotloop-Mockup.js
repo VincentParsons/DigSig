@@ -7,13 +7,29 @@ import {PdfContainer} from "./styles";
 // Mocking what dotloop does
 // generates a div per pdf page
 // unlike dotloop each div has an iframe vs a png image of pdf
-const DotLoopMockup = () => {
+const DotLoopMockup = ({originalPdf, setOriginalPdf, currentPage, setCurrentPage}) => {
 
-  const [originalPdf, setOriginalPdf] = useState({})
   const [pages, setPages] = useState([])
-  const [currentPage, setCurrentPage] = useState({})
   const [currentPageNumber, setCurrentPageNumber] = useState(1)
   const [inputValue, setInputValue] = useState(1)
+
+  const getField = (id, form) => {
+    switch(id) {
+      case 'Text':
+        return form.createTextField(`Text-${form.getFields().length + 1}`)
+      case 'Signature':
+        const signature = form.createTextField(`Signature-${form.getFields().length + 1}`)
+        signature.enableReadOnly()
+        return signature
+      case 'Checkbox':
+        return form.createCheckBox(`CheckBox-${form.getFields().length + 1}`)
+      case 'RadioBtn':
+        return form.createRadioGroup(`Radio-${form.getFields().length + 1}`)
+      default:
+        return form.createTextField(`Text-${form.getFields().length + 1}`)
+
+    }
+  }
 
 // add the element to pdf page
 const addElementToPage = async(e)=>{
@@ -22,19 +38,31 @@ const addElementToPage = async(e)=>{
   // console.log(preview);
   // console.log(`Screen X ${e.screenX} Y ${e.screenY}  Client X ${e.clientX} Y ${e.clientY}`);
 
-  console.log('pageX', e.pageX)
-  console.log('pageY', e.pageY)
-
   const pdf = await PDFDocument.load(currentPage)
   const form = pdf.getForm()
 
-  const text = form.createTextField('text')
+  const field = getField(e.target.id, form)
+  console.log(field)
+  const embedElement = document.getElementById("pdframe")
+  console.log('PageY', e.pageY)
+  console.log('PageX', e.pageX)
+  console.log('offsetTop', embedElement.offsetTop)
 
-  text.addToPage(pdf.getPage(0), {
-    x: e.pageX - 100,
-    y: (pdf.getPage(0).getHeight() - e.pageY) + 26
-  })
+  console.log('height', pdf.getPage(0).getHeight())
+  console.log('width', pdf.getPage(0).getWidth())
 
+
+  if(field.getName().includes("Radio")) {
+    field.addOptionToPage('Radio', pdf.getPage(0), {
+      x: e.pageX - embedElement.offsetLeft,
+      y: pdf.getPage(0).getHeight() - ((e.pageY - embedElement.offsetTop))
+    })
+  } else {
+    field.addToPage(pdf.getPage(0), {
+      x: e.pageX - embedElement.offsetLeft,
+      y: pdf.getPage(0).getHeight() - ((e.pageY - embedElement.offsetTop))
+    })
+  }
 
   const pdfBase64 = await pdf.saveAsBase64({dataUri: true})
 
@@ -269,7 +297,7 @@ const changePageHandler = async (e) => {
           <button onClick={incrementHandler}>{'->'}</button>
         </div>
           <PdfContainer>
-            <iframe id="pdframe" title="pdframe" src={currentPage}></iframe>
+            <embed id="pdframe" title="pdframe" src={currentPage}></embed>
             </PdfContainer>
           {/*{frames.map(frame => frame)}*/}
         </div> 
