@@ -40,8 +40,7 @@ def register_user():
     user_exists = User.query.filter_by(email=email).first() is not None
 
     if user_exists:
-        return redirect("http://localhost:3000/LoginUI")
-
+        return "User already exists"
     hashed_password = bcrypt.generate_password_hash(password)
     new_user = User(email=email, password=hashed_password)
     db.session.add(new_user)

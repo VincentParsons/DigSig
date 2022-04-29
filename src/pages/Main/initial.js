@@ -85,7 +85,7 @@ const Initial = ({pdf, setPdf}) => {
             <h1>
             <FaFileSignature />
             <a href="/"> digital-signature</a>
-            <input type="file" onChange={handleChange} />
+            <input type="file" name="pdf" onChange={handleChange} />
             </h1>
             <PdfContainer>
             <iframe id="pdframe" title="pdframe" src={pdf}></iframe>
