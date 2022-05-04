@@ -20,7 +20,7 @@ import Container from "../../components/Container";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 const Main = () => {
 
-  const [mode, setMode] = useState("initial")
+  const [mode, setMode] = useState("dotloop")
   const [signing, setSigning] = useState(false)
   const [pdf, setPdf] = useState([])
   const [pdfs, setPdfs] = useState([])
@@ -138,7 +138,7 @@ const Main = () => {
 
   return (
     <Container>
-      <form action="http://127.0.0.1:5000/save-pdf" method="post" enctype="multipart/form-data">
+      {/* <form action="http://127.0.0.1:5000/save-pdf" method="post" enctype="multipart/form-data"> */}
         <div>
           Mode:
           <button onClick={() => setMode('initial')}>initial</button>
@@ -167,7 +167,7 @@ const Main = () => {
               )}
             </SignButton>
             <button>
-              <a href={pdf} download>
+              <a href={originalPdf} download>
                 <FaDownload color="#fff" size={14} />
               </a>
             </button>
@@ -176,7 +176,7 @@ const Main = () => {
               </button>
           </div>
         </SignContainer>
-      </form>
+      {/* </form> */}
     </Container>
   );
 }
